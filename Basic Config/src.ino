@@ -8,8 +8,8 @@
 
 #define SLAVE_RESET_PIN 2
 
-const char* ssid = "MITRA_TAX";
-const char* password = "Mitra@1667";
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
 const char* names[2];
 
 const char* version = "v1.0";
