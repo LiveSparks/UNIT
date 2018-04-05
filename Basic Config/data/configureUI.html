@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.deep_purple-indigo.min.css" />
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <style>
+        .mdl-textfield {
+            margin-right : 178px;
+            margin-left : 22px;
+        }
+        .mdl-data-table {
+            table-layout:fixed;
+            width:100%;
+            
+        }
+        #my-table td, th {
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            border:0px;
+        }
+        #my-table{
+            margin-top:24px;
+        }
+        .mdl-data-table th, td{
+            text-align: left !important;
+            border : 0px;
+        }
+        .center{
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+    <center>
+    <button id = "ADD" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored"><b>Add</b></button>
+    <button id = "Make" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored"><b>Configure</b></button>
+    </center>
+    <center>
+    <section>
+            <div class="mdl-cell mdl-cell--6-col-tablet mdl-cell--10-col-desktop mdl-cell--stretch">
+    <table id = "my_table" class="mdl-data-table mdl-js-data-table">
+        <tr class = "rwsld">
+            <td>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <select class="mdl-textfield__input" id = "Pin0" name = "Pin">
+                        <option></option>
+                        <option value = "1">1</option>
+                        <option value = "2">2</option>
+                        <option value = "3">3</option>
+                        <option value = "4">4</option>
+                        <option value = "5">5</option>
+                        <option value = "6">6</option>
+                        <option value = "7">7</option>
+                        <option value = "8">8</option>
+                        <option value = "9">9</option>
+                        <option value = "10">10</option>
+                        <option value = "11">11</option>
+                        <option value = "12">12</option>
+                        <option value = "13">13</option>
+                        <option value = "14">14</option>
+                        <option value = "15">15</option>
+                        <option value = "16">16</option>
+                        <option value = "17">17</option>
+                        <option value = "18">18</option>
+                        <option value = "19">19</option>
+                    </select>
+                    <label class="mdl-textfield__label" for="Pin">Pins</label>
+                </div>
+            </td>
+            <td>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <select class="mdl-textfield__input" id = "Sensor0" name = "Sensor">
+                        <option></option>
+                        <option value = "1">Actuators</option>
+                        <option value = "2">Digital Input</option>
+                        <option value = "3">Analog Output</option>
+                        <option value = "4">Analog Input</option>
+                        <option value = "5">I2C</option>
+                    </select>
+                    <label class="mdl-textfield__label" for="Sensor">Connections</label>
+                </div>
+            </td>
+            <td>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="Input0">
+                    <label class="mdl-textfield__label" for="Input0">Name...</label>
+                </div>
+            </td>
+        </tr>
+    </table>
+    </div>
+</section>
+    <script >
+        var info = {        
+            "pin" : [],
+            "connection" : [],
+            "name" : []
+        }
+        var Pin = document.getElementById("Pin0");
+        var Sensor = document.getElementById("Sensor0");
+        var add = document.getElementById("ADD");
+        var make = document.getElementById("Make");
+        var a = document.getElementById("download_link");
+        var name = document.getElementById("Input0"); 
+        var num_for_pin = 0;
+        var num_for_sensor = 0;
+        var num_of_input = 0; 
+        var id_number = 1;
+        var id_number2 = 1;
+        var id_number3 = 1;
+        var no_of_row = 1;
+        var temp;
+    
+        function reset(){
+            info = {        
+                "pin" : [],
+                "connection" : [],
+                "name" : []
+            }
+        }
+
+        function selectors(){
+            var new_pin = document.querySelectorAll('[id^=Pin]');
+            var new_sensor = document.querySelectorAll('[id^=Sensor]');
+            var new_name = document.querySelectorAll('[id^=Input]');
+            var new_pin_value;
+            var new_sensor_value;
+            var new_name_value;
+            for(var i in new_pin){
+                if(i == 0){
+                    new_pin_value = Pin.value;
+                    add_json_to_initial_pin(new_pin_value);
+                }
+                else{
+                    new_pin_value = new_pin[i].value;
+                    add_json_to_pin(new_pin_value);
+                }
+            }
+            for(var i in new_name){
+                if(i == 0){
+                    new_name_value = $("input").val();
+                        add_json_to_initial_name(new_name_value);                
+                }
+                else{
+                    new_name_value = new_name[i].value;
+                    add_json_to_name(new_name_value);                    
+                }           
+            }
+            for(var i in new_sensor){
+                if(i == 0)
+                {
+                    new_sensor_value = Sensor.value;
+                    add_json_to_initial_sensor(new_sensor_value);
+                }
+                else{
+                    new_sensor_value = new_sensor[i].value;
+                    add_json_to_sensor(new_sensor_value);
+                }
+            }
+        }
+        function add_json_to_name(nname){
+            if(temp > num_of_input){
+                info.name[num_of_input] = nname;
+                num_of_input++;
+            }
+        }
+
+        function add_json_to_pin(npin){
+            if(temp > num_for_pin){
+                info.pin[num_for_pin] = npin;
+                num_for_pin++;
+            }  
+        }
+    
+        function add_json_to_sensor(nsensor){
+            if(temp > num_for_sensor){
+                info.connection[num_for_sensor] = nsensor;
+                num_for_sensor++;
+            }
+        }
+        
+        function add_json_to_initial_pin(npin){
+            info.pin[num_for_pin] = npin;
+            num_for_pin++;
+        }
+    
+        function add_json_to_initial_sensor(nsensor){
+            info.connection[num_for_sensor] = nsensor;
+            num_for_sensor++;
+        }
+
+        function add_json_to_initial_name(nname){
+            info.name[num_of_input] = nname;
+            num_of_input++;
+        }
+    
+        add.addEventListener("click", function(){
+            appendRow();
+            no_of_row++;
+            temp = no_of_row;
+        });
+    
+        make.addEventListener("click", function(){
+            selectors();
+            console.log(info);
+            var xhr = new XMLHttpRequest();
+            var url = "/config";
+            xhr.open("POST",url,true);
+            xhr.setRequestHeader("Content-type","application/json");
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    var json = JSON.parse(xhr.responseText);
+                }
+            }
+            var data = JSON.stringify(info);
+            xhr.send(data);
+            window.location.replace("/");
+            reset();
+        });
+    
+        function appendRow() {
+            var tbl = document.getElementById('my_table'), 
+            row = tbl.insertRow(tbl.rows.length),      
+            i;
+            createCell1(row.insertCell(0));
+            createCell2(row.insertCell(1));
+            createCell3(row.insertCell(2));
+        }
+    
+        function createCell1(cell) {
+
+            var div1 = document.createElement("div");
+            div1.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+            var sel1 = document.createElement("select");
+            var label = document.createElement("label");
+            label.setAttribute("for","Pin");
+            label.className = "mdl-textfield__label";
+            
+            label.innerHTML = "Pins"
+            sel1.setAttribute("id","Pin"+id_number);
+            sel1.setAttribute("name","Pin");
+            sel1.className = "mdl-textfield__input";
+            
+            
+            id_number++;
+            var opt = document.createElement("option");
+            var opt1 = document.createElement("option");
+            var opt2 = document.createElement("option");
+            var opt3 = document.createElement("option");
+            var opt4 = document.createElement("option");
+            var opt5 = document.createElement("option");
+            var opt6 = document.createElement("option");
+            var opt7 = document.createElement("option");
+            var opt8 = document.createElement("option");
+            var opt9 = document.createElement("option");
+            var opt10 = document.createElement("option");
+            var opt11 = document.createElement("option");
+            var opt12 = document.createElement("option");
+            var opt13 = document.createElement("option");
+            var opt14 = document.createElement("option");
+            var opt15 = document.createElement("option");
+            var opt16 = document.createElement("option");
+            var opt17 = document.createElement("option");
+            var opt18 = document.createElement("option");
+            var opt19 = document.createElement("option");
+            opt1.setAttribute("value", 1);
+            opt1.textContent = "1";
+            opt2.setAttribute("value", 2);
+            opt2.textContent = "2";
+            opt3.setAttribute("value", 3);
+            opt3.textContent = "3";
+            opt4.setAttribute("value", 4);
+            opt4.textContent = "4";
+            opt5.setAttribute("value", 5);
+            opt5.textContent = "5";
+            opt6.setAttribute("value", 6);
+            opt6.textContent = "6";
+            opt7.setAttribute("value", 7);
+            opt7.textContent = "7";
+            opt8.setAttribute("value", 8);
+            opt8.textContent = "8";
+            opt9.setAttribute("value", 9);
+            opt9.textContent = "9";
+            opt10.setAttribute("value", 10);
+            opt10.textContent = "10";
+            opt11.setAttribute("value", 11);
+            opt11.textContent = "11";
+            opt12.setAttribute("value", 12);
+            opt12.textContent = "12";
+            opt13.setAttribute("value", 13);
+            opt13.textContent = "13";
+            opt14.setAttribute("value", 14);
+            opt14.textContent = "14";
+            opt15.setAttribute("value", 15);
+            opt15.textContent = "15";
+            opt16.setAttribute("value", 16);
+            opt16.textContent = "16";
+            opt17.setAttribute("value", 17);
+            opt17.textContent = "17";
+            opt18.setAttribute("value", 18);
+            opt18.textContent = "18";
+            opt19.setAttribute("value", 19);
+            opt19.textContent = "19";
+            
+            sel1.appendChild(opt);
+            sel1.appendChild(opt1);
+            sel1.appendChild(opt2);
+            sel1.appendChild(opt3);
+            sel1.appendChild(opt4);
+            sel1.appendChild(opt5);
+            sel1.appendChild(opt6);
+            sel1.appendChild(opt7);
+            sel1.appendChild(opt8);
+            sel1.appendChild(opt9);
+            sel1.appendChild(opt10);
+            sel1.appendChild(opt11);
+            sel1.appendChild(opt12);
+            sel1.appendChild(opt13);
+            sel1.appendChild(opt14);
+            sel1.appendChild(opt15);
+            sel1.appendChild(opt16);
+            sel1.appendChild(opt17);
+            sel1.appendChild(opt18);
+            sel1.appendChild(opt19);
+            div1.appendChild(sel1);
+            div1.appendChild(label);
+            cell.appendChild(div1);
+            componentHandler.upgradeAllRegistered();                     
+        }
+
+        function createCell2(cell) {
+            var div2 = document.createElement("div");
+            div2.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+            var sel2 = document.createElement("select");
+            sel2.className = "mdl-textfield__input";
+            sel2.setAttribute("name","Sensor");
+            sel2.setAttribute("id","Sensor"+id_number2);
+            id_number2++;
+            var label2 = document.createElement("label");
+            label2.className = "mdl-textfield__label";
+            label2.setAttribute("for","Sensor");
+            label2.textContent = "Connections";
+            var optt = document.createElement("option");
+            var optt1 = document.createElement("option");
+            optt1.setAttribute("value", "1");
+            optt1.textContent = "Actuators";
+            var optt2 = document.createElement("option");
+            optt2.setAttribute("value","2");
+            optt2.textContent = "Digital Input";
+            var optt3 = document.createElement("option");
+            optt3.setAttribute("value","3");
+            optt3.textContent = "Analog Output";  
+            var optt4 = document.createElement("option");
+            optt4.setAttribute("value","4");
+            optt4.textContent = "Analog Input";
+            var optt5 = document.createElement("option");
+            optt5.setAttribute("value","5");
+            optt5.textContent = "I2C";
+            sel2.appendChild(optt);
+            sel2.appendChild(optt1);
+            sel2.appendChild(optt2);
+            sel2.appendChild(optt3);
+            sel2.appendChild(optt4);
+            sel2.appendChild(optt5);
+            div2.appendChild(sel2);
+            div2.appendChild(label2);
+            cell.appendChild(div2);
+            componentHandler.upgradeAllRegistered();                      
+        }
+
+        function createCell3(cell){
+            var div3 = document.createElement("div");
+            div3.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+            var new_input = document.createElement("input");
+            new_input.className = "mdl-textfield__input";
+            new_input.setAttribute("id","Input"+id_number3);
+            new_input.setAttribute("type","text");
+            var label3 = document.createElement("label");
+            label3.className = "mdl-textfield__label";
+            label3.setAttribute("for","Input0");
+            label3.textContent = "Name...";
+            id_number3++;
+            div3.appendChild(new_input);
+            div3.appendChild(label3);
+            cell.appendChild(div3);
+            componentHandler.upgradeAllRegistered();                      
+        }       
+    </script>
+</body>
+</html>
